@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Minecraft Server Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'VT323', monospace;
+      background: url('bg.png') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      width: 320px;
+      animation: fadeIn 0.7s ease;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .login-container h2 {
+      text-align: center;
+      color: #00ff88;
+      margin-bottom: 30px;
+      text-shadow: 0 0 12px #00ff88;
+      font-size: 2rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 16px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    input:focus {
+      outline: 2px solid #00ff88;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #00ff88, #00cc6a);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    .popup {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #222;
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px #000;
+      font-size: 1.2rem;
+      z-index: 1000;
+      opacity: 0;
+      animation: slideDownFade 0.4s ease forwards;
+    }
+
+    .popup.success {
+      background-color: #00c853;
+      color: #000;
+      text-shadow: none;
+    }
+
+    .popup.error {
+      background-color: #ff1744;
+    }
+
+    @keyframes slideDownFade {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -30px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Server Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDJBZccF0si7pGLge0dcJ4BZ8uA5x3Uk34",
+      authDomain: "login-server-9da9a.firebaseapp.com",
+      projectId: "login-server-9da9a",
+      storageBucket: "login-server-9da9a.appspot.com",
+      messagingSenderId: "859126616866",
+      appId: "1:859126616866:web:d0148af87a7ee15861cb7b",
+      measurementId: "G-NT1LJLMQLM"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const showPopup = (message, type) => {
+      const popup = document.createElement("div");
+      popup.classList.add("popup", type);
+      popup.textContent = message;
+      document.body.appendChild(popup);
+      setTimeout(() => popup.remove(), 3000);
+    };
+
+    document.getElementById("loginBtn").addEventListener("click", () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          showPopup("✅ Access Granted!", "success");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 3000);
+        })
+        .catch((error) => {
+          showPopup("⚠️ Access Denied", "error");
+        });
+    });
+  </script>
+</body>
+</html>
